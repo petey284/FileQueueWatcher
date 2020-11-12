@@ -6,23 +6,34 @@ namespace FileQueueWatcher
     public class DbQueue
     {
         public string ConnectionString;
-        public static DbQueue Init(string connectionString)
+
+        /// <summary>
+        ///     Factory method for DbQueues
+        /// </summary>
+        /// <param name="dbFilePath">Sqlite db file path</param>
+        /// <returns>DbQueue</returns>
+        public static DbQueue Init(string dbFilePath)
         {
             var dbQueue = new DbQueue();
-            dbQueue.SetConfig(connectionString);
+            dbQueue.SetFilePath(dbFilePath);
 
             return dbQueue;
         }
 
-        private void SetConfig(string connectionString)
+        private void SetFilePath(string dbFilePath)
         {
-            this.ConnectionString = connectionString;
+            if (string.IsNullOrEmpty(dbFilePath))
+            {
+                throw new ArgumentException();
+            }
+
+            this.ConnectionString = dbFilePath;
         }
 
         /// <summary>
         ///     Gets any new directories to monitor
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List of directories as string</returns>
         public List<string> GetNewDirectories()
         {
             throw new NotImplementedException();
