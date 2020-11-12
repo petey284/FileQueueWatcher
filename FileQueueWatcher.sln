@@ -5,7 +5,13 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A3DB3FC4-4A3A-4DEB-AA73-7910D66996B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileQueueWatcher", "src\FileQueueWatcher\FileQueueWatcher.csproj", "{DA2DB327-D764-4439-88CD-823524064F34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileQueueWatcher", "src\FileQueueWatcher\FileQueueWatcher.csproj", "{DA2DB327-D764-4439-88CD-823524064F34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileQueueWatcher.DbQueue", "src\FileQueueWatcher.DbQueue\FileQueueWatcher.DbQueue.csproj", "{6B907936-F83F-43BB-9482-DC8985F88EDE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{F9C1869F-347B-4E9E-AC4A-5A5A7D463116}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileQueueWatcher.DbQueue.Tests", "test\FileQueueWatcher.DbQueue.Tests\FileQueueWatcher.DbQueue.Tests.csproj", "{C70F0202-D7CA-4B03-A312-FD314FB19D10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,12 +23,22 @@ Global
 		{DA2DB327-D764-4439-88CD-823524064F34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA2DB327-D764-4439-88CD-823524064F34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA2DB327-D764-4439-88CD-823524064F34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B907936-F83F-43BB-9482-DC8985F88EDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B907936-F83F-43BB-9482-DC8985F88EDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B907936-F83F-43BB-9482-DC8985F88EDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B907936-F83F-43BB-9482-DC8985F88EDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C70F0202-D7CA-4B03-A312-FD314FB19D10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C70F0202-D7CA-4B03-A312-FD314FB19D10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C70F0202-D7CA-4B03-A312-FD314FB19D10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C70F0202-D7CA-4B03-A312-FD314FB19D10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{DA2DB327-D764-4439-88CD-823524064F34} = {A3DB3FC4-4A3A-4DEB-AA73-7910D66996B2}
+		{6B907936-F83F-43BB-9482-DC8985F88EDE} = {A3DB3FC4-4A3A-4DEB-AA73-7910D66996B2}
+		{C70F0202-D7CA-4B03-A312-FD314FB19D10} = {F9C1869F-347B-4E9E-AC4A-5A5A7D463116}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E7AC782C-4949-4A66-A8B3-C4026605692D}
