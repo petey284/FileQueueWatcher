@@ -1,26 +1,32 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace FileQueueWatcher
 {
     public class DirectoryMonitorWorker : BackgroundService
     {
+        public string DbPath;
 
-        public DirectoryMonitorWorker()
+        public DirectoryMonitorWorker(IConfiguration configuration)
         {
+            this.DbPath = configuration.GetValue<string>("dbPath");
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            List<DirectoryMonitor> monitors = new List<DirectoryMonitor>();
+            // Initializing file system database (currently only works with sqlite)
+            var dbQueue = DbQueue.Init(this.DbPath);
 
-            // TODO: 
-            // - Read from database
-            // - More advanced: read from message queue
+            var dbQueueMonitors = dbQueue
+                .GetDirectories()
+                .Select(x => new DirectoryMonitor(x))
+                .ToList();
+
+            List<DirectoryMonitor> monitors = new List<DirectoryMonitor>();
 
             monitors.Add(new DirectoryMonitor("C:\\temp"));
             monitors.Add(new DirectoryMonitor("C:\\temp\\test"));

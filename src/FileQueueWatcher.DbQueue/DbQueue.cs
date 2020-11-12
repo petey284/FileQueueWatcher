@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace FileQueueWatcher.DbQueue
+namespace FileQueueWatcher
 {
     public class DbQueue
     {
@@ -16,6 +17,11 @@ namespace FileQueueWatcher.DbQueue
         private void SetConfig(string connectionString)
         {
             this.ConnectionString = connectionString;
+        }
+
+        public List<string> GetDirectories()
+        {
+            throw new NotImplementedException();
         }
     }
 };
