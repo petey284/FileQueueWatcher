@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -66,7 +65,7 @@ namespace FileQueueWatcher
 
         public override void Dispose()
         {
-            this.DbQueue.DropWatchedDirectoryTable();
+            this.DbQueue.DropWatchedDirectoriesTable();
             base.Dispose();
         }
     }

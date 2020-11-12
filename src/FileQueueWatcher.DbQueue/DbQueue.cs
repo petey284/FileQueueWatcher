@@ -6,6 +6,7 @@ namespace FileQueueWatcher
     public class DbQueue
     {
         public string ConnectionString;
+        public Database Database;
 
         /// <summary>
         ///     Factory method for DbQueues
@@ -16,6 +17,7 @@ namespace FileQueueWatcher
         {
             var dbQueue = new DbQueue();
             dbQueue.SetFilePath(dbFilePath);
+            dbQueue.Database = new Database(dbFilePath);
 
             return dbQueue;
         }
@@ -49,7 +51,7 @@ namespace FileQueueWatcher
             throw new NotImplementedException();
         }
 
-        public void DropWatchedDirectoryTable()
+        public void DropWatchedDirectoriesTable()
         {
             throw new NotImplementedException();
         }

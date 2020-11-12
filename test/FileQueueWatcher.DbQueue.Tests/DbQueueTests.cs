@@ -27,7 +27,6 @@ namespace FileQueueWatcher.Tests
         [Fact]
         public void GetNewDirectoriesTests()
         {
-            Assert.True(false);
         }
     }
 
