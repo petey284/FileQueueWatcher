@@ -17,6 +17,11 @@ namespace FileQueueWatcher
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             List<DirectoryMonitor> monitors = new List<DirectoryMonitor>();
+
+            // TODO: 
+            // - Read from database
+            // - More advanced: read from message queue
+
             monitors.Add(new DirectoryMonitor("C:\\temp"));
             monitors.Add(new DirectoryMonitor("C:\\temp\\test"));
             foreach (DirectoryMonitor monitor in monitors)
@@ -31,6 +36,12 @@ namespace FileQueueWatcher
             {
                 monitor.StopMonitor();
             }
+        }
+
+        public override void Dispose()
+        {
+            // Remove particular table from database
+            base.Dispose();
         }
     }
 }
