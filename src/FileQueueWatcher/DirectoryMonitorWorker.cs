@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,35 +10,54 @@ namespace FileQueueWatcher
 {
     public class DirectoryMonitorWorker : BackgroundService
     {
-        public string DbPath;
+        private readonly DbQueue DbQueue;
 
         public DirectoryMonitorWorker(IConfiguration configuration)
         {
-            this.DbPath = configuration.GetValue<string>("dbPath");
+            var dbPath = configuration.GetValue<string>("dbPath");
+            this.DbQueue = DbQueue.Init(dbPath);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // 1. Initializes file system database
-            // 2. Reads from DirectoriesToWatch table
-            // 3. Once directory monitor has started, adds database to table of directories watched
-            // 4. Once service has ended, drops WatchedDirectories table
-            var dbQueue = DbQueue.Init(this.DbPath);
+            // Retrieve directories to watch from database queue and exit early if there are no directories to watch
+            var dbQueueMonitors = this.StartWatchOnNewDirectories();
+            if (dbQueueMonitors.Count() == 0) { return; }
 
-            var dbQueueMonitors = dbQueue
-                .GetDirectories()
+            // Stop process when cancellation is requested
+            // When new directories are added to database queue, then begin monitor for those new directories
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                if (this.DbQueue.HasNewDirectoryEntries())
+                {
+                    this.StartWatchOnNewDirectories();
+                    continue;
+                }
+
+                await Task.Delay(1000, stoppingToken);
+            }
+
+            this.StopMonitors(dbQueueMonitors);
+        }
+
+        private List<DirectoryMonitor> StartWatchOnNewDirectories()
+        {
+            var dbQueueMonitors = this.DbQueue
+                .GetNewDirectories() // Should return empty list when appropriate
                 .Select(x => new DirectoryMonitor(x))
                 .ToList();
 
             foreach (var monitor in dbQueueMonitors)
             {
                 monitor.StartMonitor();
-                dbQueue.AddWatchedDirectory(monitor.MonitoredPath);
+                this.DbQueue.AddWatchedDirectory(monitor.MonitoredPath);
             }
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                await Task.Delay(1000, stoppingToken);
-            }
+
+            return dbQueueMonitors;
+        }
+
+        private void StopMonitors(List<DirectoryMonitor> dbQueueMonitors)
+        {
             foreach (var monitor in dbQueueMonitors)
             {
                 monitor.StopMonitor();
@@ -45,7 +66,7 @@ namespace FileQueueWatcher
 
         public override void Dispose()
         {
-            // Drops WatchedDirectories table
+            this.DbQueue.DropWatchedDirectoryTable();
             base.Dispose();
         }
     }

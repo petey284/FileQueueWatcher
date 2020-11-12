@@ -19,12 +19,26 @@ namespace FileQueueWatcher
             this.ConnectionString = connectionString;
         }
 
-        public List<string> GetDirectories()
+        /// <summary>
+        ///     Gets any new directories to monitor
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetNewDirectories()
         {
             throw new NotImplementedException();
         }
 
         public void AddWatchedDirectory(string monitoredPath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasNewDirectoryEntries()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DropWatchedDirectoryTable()
         {
             throw new NotImplementedException();
         }
