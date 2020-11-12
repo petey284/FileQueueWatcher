@@ -23,5 +23,10 @@ namespace FileQueueWatcher
         {
             throw new NotImplementedException();
         }
+
+        public void AddWatchedDirectory(string monitoredPath)
+        {
+            throw new NotImplementedException();
+        }
     }
 };

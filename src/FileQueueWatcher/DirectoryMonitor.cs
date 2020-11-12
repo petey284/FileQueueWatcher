@@ -7,20 +7,20 @@ namespace FileQueueWatcher
 
     class DirectoryMonitor
     {
-        private string monitoredPath;
+        public string MonitoredPath;
         private System.IO.FileSystemWatcher fileSystemWatcher;
         private DateTime LastChanged;
 
         public DirectoryMonitor(string path)
         {
-            monitoredPath = path;
+            MonitoredPath = path;
             Initialise();
         }
 
         private void Initialise()
         {
             fileSystemWatcher = new FileSystemWatcher();
-            fileSystemWatcher.Path = monitoredPath;
+            fileSystemWatcher.Path = MonitoredPath;
             fileSystemWatcher.Changed += HandleChangedEvent;
             fileSystemWatcher.Created += HandleCreatedEvent;
             fileSystemWatcher.Renamed += HandleRenamedEvent;
@@ -29,13 +29,13 @@ namespace FileQueueWatcher
 
         public void StartMonitor()
         {
-            Log.Information("Monitor for directory {MonitorPath} is STARTING.", monitoredPath);
+            Log.Information("Monitor for directory {MonitorPath} is STARTING.", MonitoredPath);
             fileSystemWatcher.EnableRaisingEvents = true;
         }
 
         public void StopMonitor()
         {
-            Log.Information("Monitor for directory {MonitorPath} is STOPPING.", monitoredPath);
+            Log.Information("Monitor for directory {MonitorPath} is STOPPING.", MonitoredPath);
             fileSystemWatcher.EnableRaisingEvents = false;
         }
 
@@ -72,7 +72,7 @@ namespace FileQueueWatcher
 
         private void LogEvent(string fileName, string action)
         {
-            Log.Information("File {FileName} {Action} in {MonitorPath}.", fileName, action, monitoredPath);
+            Log.Information("File {FileName} {Action} in {MonitorPath}.", fileName, action, MonitoredPath);
         }
     }
 }

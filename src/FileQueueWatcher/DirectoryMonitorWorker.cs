@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +17,10 @@ namespace FileQueueWatcher
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // Initializing file system database (currently only works with sqlite)
+            // 1. Initializes file system database
+            // 2. Reads from DirectoriesToWatch table
+            // 3. Once directory monitor has started, adds database to table of directories watched
+            // 4. Once service has ended, drops WatchedDirectories table
             var dbQueue = DbQueue.Init(this.DbPath);
 
             var dbQueueMonitors = dbQueue
@@ -26,19 +28,16 @@ namespace FileQueueWatcher
                 .Select(x => new DirectoryMonitor(x))
                 .ToList();
 
-            List<DirectoryMonitor> monitors = new List<DirectoryMonitor>();
-
-            monitors.Add(new DirectoryMonitor("C:\\temp"));
-            monitors.Add(new DirectoryMonitor("C:\\temp\\test"));
-            foreach (DirectoryMonitor monitor in monitors)
+            foreach (var monitor in dbQueueMonitors)
             {
                 monitor.StartMonitor();
+                dbQueue.AddWatchedDirectory(monitor.MonitoredPath);
             }
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Task.Delay(1000, stoppingToken);
             }
-            foreach (DirectoryMonitor monitor in monitors)
+            foreach (var monitor in dbQueueMonitors)
             {
                 monitor.StopMonitor();
             }
@@ -46,7 +45,7 @@ namespace FileQueueWatcher
 
         public override void Dispose()
         {
-            // Remove particular table from database
+            // Drops WatchedDirectories table
             base.Dispose();
         }
     }
