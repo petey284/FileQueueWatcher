@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using System;
 using System.IO;
 
 namespace FileQueueWatcher
@@ -8,6 +9,7 @@ namespace FileQueueWatcher
     {
         private string monitoredPath;
         private System.IO.FileSystemWatcher fileSystemWatcher;
+        private DateTime LastChanged;
 
         public DirectoryMonitor(string path)
         {
@@ -19,6 +21,7 @@ namespace FileQueueWatcher
         {
             fileSystemWatcher = new FileSystemWatcher();
             fileSystemWatcher.Path = monitoredPath;
+            fileSystemWatcher.Changed += HandleChangedEvent;
             fileSystemWatcher.Created += HandleCreatedEvent;
             fileSystemWatcher.Renamed += HandleRenamedEvent;
             fileSystemWatcher.Deleted += HandleDeletedEvent;
@@ -34,6 +37,22 @@ namespace FileQueueWatcher
         {
             Log.Information("Monitor for directory {MonitorPath} is STOPPING.", monitoredPath);
             fileSystemWatcher.EnableRaisingEvents = false;
+        }
+
+        private void HandleChangedEvent(object sender, FileSystemEventArgs e)
+        {
+            this.LastChanged = DateTime.Now;
+
+            if (this.LastChanged == null)
+            {
+                LogEvent(e.Name, "changed");
+                return;
+            }
+
+            if ((DateTime.Now - this.LastChanged) > new TimeSpan(100))
+            {
+                LogEvent(e.Name, "changed");
+            }
         }
 
         private void HandleCreatedEvent(object sender, FileSystemEventArgs e)
