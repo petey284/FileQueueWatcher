@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "FileQueueWatcher": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
