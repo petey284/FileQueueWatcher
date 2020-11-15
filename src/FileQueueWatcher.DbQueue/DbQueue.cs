@@ -1,12 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using static FileQueueWatcher.Constants;
 
 namespace FileQueueWatcher
 {
-    public class DbQueue
+    public class DbQueue : IDisposable
     {
+        /// <summary>
+        ///     Database file path
+        /// </summary>
         public string ConnectionString;
-        public Database Database;
+
+        /// <summary>
+        ///     Sqlite database
+        /// </summary>
+        public Database Db;
 
         /// <summary>
         ///     Factory method for DbQueues
@@ -17,11 +26,15 @@ namespace FileQueueWatcher
         {
             var dbQueue = new DbQueue();
             dbQueue.SetFilePath(dbFilePath);
-            dbQueue.Database = new Database(dbFilePath);
+            dbQueue.Db = new Database(dbFilePath);
 
             return dbQueue;
         }
 
+        /// <summary>
+        ///     Set file path for database
+        /// </summary>
+        /// <param name="dbFilePath">File path</param>
         private void SetFilePath(string dbFilePath)
         {
             if (string.IsNullOrEmpty(dbFilePath))
@@ -38,22 +51,42 @@ namespace FileQueueWatcher
         /// <returns>List of directories as string</returns>
         public List<string> GetNewDirectories()
         {
-            throw new NotImplementedException();
+            var directoriesBeingWatchedMapping =
+                this.Db.WatchedDirectories.ToDictionary(x => x.Fullpath, x => x.Id);
+
+            return this.Db.InitialDirectories.ToList()
+                .Where(x => !directoriesBeingWatchedMapping.ContainsKey(x.Fullpath))
+                .Select(x => x.Fullpath)
+                .ToList();
         }
+
+        /// <summary>
+        ///     Checks if there are any new directories
+        /// </summary>
+        /// <returns>True if there are any new directories</returns>
+        public bool HasNewDirectoryEntries() => this.GetNewDirectories().Count() > 0;
 
         public void AddWatchedDirectory(string monitoredPath)
         {
-            throw new NotImplementedException();
+            this.Db.WatchedDirectories.Insert(new WatchedDirectory
+            {
+                Fullpath = monitoredPath,
+                IsWatched = true
+            });
         }
 
-        public bool HasNewDirectoryEntries()
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        ///     Drops WatchedDirectories table
+        /// </summary>
+        public void DropWatchedDirectoriesTable() => this.Db.DropTable(WatchedDirectories);
 
-        public void DropWatchedDirectoriesTable()
+        /// <summary>
+        ///     Dispose methods
+        /// </summary>
+        public void Dispose()
         {
-            throw new NotImplementedException();
+            // TODO: Consider if database should be removed.
+            this.Db.Dispose();
         }
     }
 };
