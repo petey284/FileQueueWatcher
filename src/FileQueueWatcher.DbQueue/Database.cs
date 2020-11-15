@@ -39,15 +39,17 @@ namespace FileQueueWatcher
                 });
             }
 
-            if (!TableExists(Constants.WatchedDirectories))
+            if (TableExists(Constants.WatchedDirectories))
             {
-                this.CreateTable(Constants.WatchedDirectories, c => new
-                {
-                    Id = c.Column<int>(primaryKey: true, autoIncrement: true),
-                    Fullpath = c.Column<string>(nullable: false),
-                    IsWatched = c.Column<bool>(nullable: false)
-                });
+                this.DropTable(this.WatchedDirectories.Name);
             }
+
+            this.CreateTable(Constants.WatchedDirectories, c => new
+            {
+                Id = c.Column<int>(primaryKey: true, autoIncrement: true),
+                Fullpath = c.Column<string>(nullable: false),
+                IsWatched = c.Column<bool>(nullable: false)
+            });
         }
 
         private bool TableExists(string tableName)
