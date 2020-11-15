@@ -1,4 +1,7 @@
 # FileQueueWatcher
+
+Forked from [ambro-r/FileQueueWatcher](https://github.com/ambro-r/FileQueueWatcher).
+
 A simple implementation to monitor a list of specified directories on a machine and record the file changes that occure within that directory.
 
 Presently the following is monitored for:
