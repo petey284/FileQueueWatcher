@@ -13,18 +13,19 @@ namespace FileQueueWatcher
 
         public DirectoryMonitorWorker(IConfiguration configuration)
         {
-            var dbPath = configuration.GetValue<string>("dbPath");
-            this.DbQueue = DbQueue.Init(dbPath);
+            this.DbQueue = DbQueue.Init(configuration.GetValue<string>("dbPath"));
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // Retrieve directories to watch from database queue and exit early if there are no directories to watch
+            // Retrieve directories to watch from database queue and exit
+            // early if there are no directories to watch
             var dbQueueMonitors = this.StartWatchOnNewDirectories();
             if (dbQueueMonitors.Count() == 0) { return; }
 
             // Stop process when cancellation is requested
-            // When new directories are added to database queue, then begin monitor for those new directories
+            // When new directories are added to database queue, then begin
+            // monitor for those new directories
             while (!stoppingToken.IsCancellationRequested)
             {
                 if (this.DbQueue.HasNewDirectoryEntries())
@@ -55,13 +56,8 @@ namespace FileQueueWatcher
             return dbQueueMonitors;
         }
 
-        private void StopMonitors(List<DirectoryMonitor> dbQueueMonitors)
-        {
-            foreach (var monitor in dbQueueMonitors)
-            {
-                monitor.StopMonitor();
-            }
-        }
+        private void StopMonitors(List<DirectoryMonitor> dbQueueMonitors) =>
+            dbQueueMonitors.ForEach(x => x.StopMonitor());
 
         public override void Dispose()
         {
